@@ -145,7 +145,6 @@ var setStageSize = function () {
 
 // 配列json.nodesのインデックスを返す
 var addNode = function (d) {
-    // TODO: d.idが未定義の場合は自動で付与する
     json.nodes.push(d);
     return json.nodes.length - 1;
 }
@@ -167,6 +166,10 @@ var getIdxByNodeId = function (id) {
         var node = nodes[i];
         if (node.id == id) return i;
     }
+}
+
+var closeNode = function (d) {
+
 }
 
 var extendNode = function (d) {
@@ -287,7 +290,11 @@ var render = function () {
         })
         .style('stroke', '#9e9e9e')
         .on('dblclick', function (d) {
-            extendNode(d)
+            if (d.open === undefined || d.open === false) {
+                extendNode(d)
+            }else {
+                closeNode(d)
+            }
         })
         .on('click', function (d) {
             if (d.type === 'subcategory' || d.type === 'user') {
