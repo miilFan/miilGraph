@@ -1,5 +1,3 @@
-var miil_categories = categories;
-
 var labelShortener = function (title, words) {
     words.forEach(function (word) {
         title = title.replace(word, '');
@@ -88,35 +86,6 @@ var parseMiilCategories = function (j, parentIdxs) {
     });
 }
 
-
-var json = {
-    nodes: [
-        {
-            id: '130727',
-            type: 'user',
-            photo_url: "daiz.jpg",
-            title: "daiz"
-        },
-        {
-            id: '29600',
-            type: 'user',
-            photo_url: "miil.jpg",
-            title: "miilme"
-        },
-        {
-            type: 'root',
-            photo_url: "miilicon.png",
-            title: "miil.me",
-            id: 'miilroot'
-        }
-    ],
-
-    edges: [
-        {source: 2, target: 0},
-        {source: 2, target: 1}
-    ]
-}
-
 var updateGallery = function (d) {
     var photos = [];
     var edges = json.edges;
@@ -156,7 +125,7 @@ var getFillColorByType = function (type) {
 }
 
 var getEdgeColorByType = function (type) {
-    if (type === 'subcategory') return '#C5CAE9';//'#AEC7E8';//'#C5CAE9';//'#9FC6E7'
+    if (type === 'subcategory') return '#C5CAE9';
     return '#ddd';
 }
 
