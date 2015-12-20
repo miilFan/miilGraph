@@ -350,7 +350,7 @@ window.addEventListener('mouseover', function (e) {
     if (cn === 'gphoto') {
         var nodeId = elm.dataset.photo_id;
         var node = json.nodes[getIdxByNodeId(nodeId)];
-        var x = node.x;
+        var x = node.x + 120;
         var y = node.y;
         document.querySelector('#preview').style.top = y + 'px';
         document.querySelector('#preview').style.left = x + 'px';
