@@ -382,7 +382,6 @@ window.addEventListener('load', function () {
         if (cate.category_id !== 588 && cate.category_id !== 589) {
             parseMiilCategories(cate, [getIdxByNodeId('miilroot')]);
         }
-    })
-    //parseMiilSubCategories(153);
+    });
     render();
 }, false);
