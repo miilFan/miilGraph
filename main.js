@@ -1,3 +1,4 @@
+/* サイドフォトギャラリー付きForceレイアウトd3jsグラフ */
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -9,6 +10,8 @@ var LayoutForce = (function () {
         _classCallCheck(this, LayoutForce);
 
         this.stageId = stage_id;
+
+        /* フォトギャラリーの設定 */
         this.widthPhotoGallery = 130;
 
         /* forceレイアウトの設定 */
@@ -23,20 +26,23 @@ var LayoutForce = (function () {
         this.bindWindowEvents();
     }
 
+    // 与えられたIDのノードを展開する
+    // 第二引数が true であれば，グラフを更新して子要素を表示する
+
     _createClass(LayoutForce, [{
-        key: 'dom',
-        value: function dom(id) {
-            return document.getElementById(id);
-        }
-    }, {
         key: 'expandNode',
-        value: function expandNode(node_id) {}
+        value: function expandNode(id) {}
+
+        // 与えられたIDのノードの子要素を除去する
     }, {
         key: 'closeNode',
-        value: function closeNode(node_id) {}
+        value: function closeNode(id) {}
     }, {
         key: 'initGraph',
         value: function initGraph() {
+            // 虫眼鏡UIに必要な要素を挿入する
+
+            // グラフを初期化する
             this.force = d3.layout.force().charge(this.charge).linkDistance(this.linkDistance);
             this.setGraphSize();
             this.linkingData();
@@ -52,6 +58,28 @@ var LayoutForce = (function () {
     }, {
         key: 'renderGraph',
         value: function renderGraph() {}
+
+        // 未登録であれば，与えられたノードを追加する
+        // 第二引数が true であれば，グラフを更新する
+    }, {
+        key: 'addNode',
+        value: function addNode(node, redraw) {}
+
+        // 未登録であれば，与えられたリンクを追加する
+    }, {
+        key: 'addLink',
+        value: function addLink(link, redraw) {}
+
+        // 与えられたIDを持つノードを削除する
+        // 第二引数が true であれば，グラフを更新する
+    }, {
+        key: 'removeNodeById',
+        value: function removeNodeById(id, redraw) {}
+
+        // 与えられたIDを持つリンクを削除する
+    }, {
+        key: 'removeLinkById',
+        value: function removeLinkById(id, redraw) {}
 
         // canvasサイズを設定する
     }, {
@@ -71,9 +99,21 @@ var LayoutForce = (function () {
         value: function bindWindowEvents() {
             var _this = this;
 
+            // ウィンドウのサイズが変更されたとき，canvasのサイズを再設定する
             window.addEventListener('resize', function (e) {
-                _this.GraphSize();
-            });
+                _this.setGraphSize();
+            }, false);
+
+            // * canvas上でクリックされた場合は，虫眼鏡を非表示にする
+            // * ギャラリー上の写真がクリックされた場合は，カスタムイベントを発行する
+            window.addEventListener('click', function (e) {
+                var id = e.target.id;
+                var cn = e.target.className;
+                if (id === _this.stageId) {
+                    none('preview');
+                    none('preview_title');
+                }
+            }, false);
         }
 
         // グラフに関するイベントリスナ
@@ -103,6 +143,38 @@ var LayoutForce = (function () {
                     return d.y;
                 });
             });
+        }
+
+        // DOM操作関連
+    }, {
+        key: 'dom',
+        value: function dom(id) {
+            return document.getElementById(id);
+        }
+    }, {
+        key: 'hide',
+        value: function hide(id) {
+            this.dom(id).style.display = 'none';
+        }
+    }, {
+        key: 'show',
+        value: function show(id) {
+            this.dom(id).style.display = 'block';
+        }
+    }, {
+        key: 'top',
+        value: function top(id, num) {
+            this.dom(id).style.top = num + 'px';
+        }
+    }, {
+        key: 'left',
+        value: function left(id, num) {
+            this.dom(id).style.left = num + 'px';
+        }
+    }, {
+        key: 'bgImg',
+        value: function bgImg(id, src) {
+            this.dom(id).style.backgroundImage = 'url(' + src + ')';
         }
     }]);
 

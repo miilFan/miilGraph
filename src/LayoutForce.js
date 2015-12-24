@@ -1,6 +1,9 @@
+/* サイドフォトギャラリー付きForceレイアウトd3jsグラフ */
 class LayoutForce {
     constructor (stage_id, nodes, links) {
         this.stageId = stage_id;
+
+        /* フォトギャラリーの設定 */
         this.widthPhotoGallery = 130;
 
         /* forceレイアウトの設定 */
@@ -15,19 +18,21 @@ class LayoutForce {
         this.bindWindowEvents();
     }
 
-    dom (id) {
-        return document.getElementById(id);
-    }
-
-    expandNode (node_id) {
+    // 与えられたIDのノードを展開する
+    // 第二引数が true であれば，グラフを更新して子要素を表示する
+    expandNode (id) {
 
     }
 
-    closeNode (node_id) {
+    // 与えられたIDのノードの子要素を除去する
+    closeNode (id) {
 
     }
 
     initGraph () {
+        // 虫眼鏡UIに必要な要素を挿入する
+
+        // グラフを初期化する
         this.force = d3.layout.force()
             .charge(this.charge)
             .linkDistance(this.linkDistance);
@@ -45,6 +50,28 @@ class LayoutForce {
 
     }
 
+    // 未登録であれば，与えられたノードを追加する
+    // 第二引数が true であれば，グラフを更新する
+    addNode (node, redraw) {
+
+    }
+
+    // 未登録であれば，与えられたリンクを追加する
+    addLink (link, redraw) {
+
+    }
+
+    // 与えられたIDを持つノードを削除する
+    // 第二引数が true であれば，グラフを更新する
+    removeNodeById (id, redraw) {
+
+    }
+
+    // 与えられたIDを持つリンクを削除する
+    removeLinkById (id, redraw) {
+
+    }
+
     // canvasサイズを設定する
     setGraphSize () {
         var width = util.w - this.widthPhotoGallery;
@@ -57,9 +84,23 @@ class LayoutForce {
 
     // windowに関するイベントリスナ
     bindWindowEvents () {
+        // ウィンドウのサイズが変更されたとき，canvasのサイズを再設定する
         window.addEventListener('resize', e => {
             this.setGraphSize();
-        });
+        }, false);
+
+        // * canvas上でクリックされた場合は，虫眼鏡を非表示にする
+        // * ギャラリー上の写真がクリックされた場合は，カスタムイベントを発行する
+        window.addEventListener('click', e => {
+            var id = e.target.id;
+            var cn = e.target.className;
+            if (id === this.stageId) {
+                none('preview');
+                none('preview_title');
+            }
+        }, false);
+
+
     }
 
     // グラフに関するイベントリスナ
@@ -79,5 +120,30 @@ class LayoutForce {
                 .attr('x', function (d) {return d.x;})
                 .attr('y', function (d) {return d.y;});
         });
+    }
+
+    // DOM操作関連
+    dom (id) {
+        return document.getElementById(id);
+    }
+
+    hide (id) {
+        this.dom(id).style.display = 'none';
+    }
+
+    show (id) {
+        this.dom(id).style.display = 'block';
+    }
+
+    top (id, num) {
+        this.dom(id).style.top = num + 'px';
+    }
+
+    left (id, num) {
+        this.dom(id).style.left = num + 'px';
+    }
+
+    bgImg (id, src) {
+        this.dom(id).style.backgroundImage = 'url('+ src +')';
     }
 }

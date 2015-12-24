@@ -316,11 +316,11 @@ var render = function () {
 //window.addEventListener('resize', setStageSize, false);
 
 window.addEventListener('click', function (e) {
-    var id = e.target.id;
-    var cn = e.target.className;
+    //var id = e.target.id;
+    //var cn = e.target.className;
     if (id === 'stage') {
-        document.querySelector('#preview').style.display = 'none';
-        document.querySelector('#preview_title').style.display = 'none';
+        //document.querySelector('#preview').style.display = 'none';
+        //document.querySelector('#preview_title').style.display = 'none';
     }else if (cn === 'gphoto') {
         window.open(e.target.dataset.page_url);
     }
