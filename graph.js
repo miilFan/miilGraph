@@ -134,6 +134,7 @@ var getTitle = function (d) {
     return '';
 }
 
+/*
 var setStageSize = function () {
     var ww = window.innerWidth - 130;
     var wh = window.innerHeight;
@@ -142,6 +143,7 @@ var setStageSize = function () {
     document.querySelector('#gallery').style.height = wh + 'px';
     force.size([ww, wh]);
 }
+*/
 
 // 配列json.nodesのインデックスを返す
 var addNode = function (d) {
@@ -201,18 +203,21 @@ var extendNode = function (d) {
 }
 
 
-var color = d3.scale.category20();
-var w = window.innerWidth, h = innerHeight;
+//var color = d3.scale.category20();
+//var w = window.innerWidth, h = innerHeight;
 
+/*
 var force = d3.layout.force()
     .charge(-450)
     .linkDistance(100)
     .size([w, h]);
+*/
 
-var svg = d3.select('#stage');
+//var svg = d3.select('#stage');
 
-force.nodes(json.nodes).links(json.edges);
+//force.nodes(json.nodes).links(json.edges);
 
+/*
 force.on('tick', function() {
     svg.selectAll('.link').attr('x1', function(d) { return d.source.x; })
         .attr('y1', function(d) { return d.source.y; })
@@ -224,6 +229,7 @@ force.on('tick', function() {
     svg.selectAll('text').attr('x', function(d) { return d.x; })
         .attr('y', function(d) { return d.y; });
 });
+*/
 
 var render = function () {
     var svg = d3.select('#stage');
@@ -307,7 +313,7 @@ var render = function () {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-window.addEventListener('resize', setStageSize, false);
+//window.addEventListener('resize', setStageSize, false);
 
 window.addEventListener('click', function (e) {
     var id = e.target.id;
@@ -352,7 +358,7 @@ window.addEventListener('mousemove', function (e) {
 }, false);
 
 window.addEventListener('load', function () {
-    setStageSize();
+    //setStageSize();
 
     miil_categories.forEach(function (cate) {
         if (cate.category_id !== 588 && cate.category_id !== 589) {

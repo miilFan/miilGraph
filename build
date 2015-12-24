@@ -1,1 +1,1 @@
-babel src/*.js > index.js
+babel src/*.js > main.js
