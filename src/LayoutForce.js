@@ -31,7 +31,6 @@ class LayoutForce {
 
     initGraph () {
         // 虫眼鏡UIに必要な要素を挿入する
-
         // グラフを初期化する
         this.force = d3.layout.force()
             .charge(this.charge)
@@ -46,7 +45,30 @@ class LayoutForce {
         this.force.nodes(this.nodes).links(this.links);
     }
 
-    renderGraph () {
+    drawGraph () {
+        var svg = this.dom(this.stageId);
+
+        // Nodesを反映
+        var nodes = svg.selectAll('.node').data(this.nodes).enter()
+            .append('g')
+            .attr('class', 'node')
+            .call(this.force.drag);
+        svg.selectAll('.node').data(this.nodes).exit().remove();
+
+        // Linksを反映
+        var edge = svg.selectAll('.link').data(this.links).enter()
+            .attr('class', 'link')
+            .style('stroke', d => {
+
+            })
+            .style('stroke-width', d => {
+                if (d.value !== undefined) return d.value;
+                return 1;
+            })
+        svg.selectAll('link').data(this.links).exit().remove();
+    }
+
+    redrawGraph () {
 
     }
 
@@ -89,7 +111,7 @@ class LayoutForce {
             this.setGraphSize();
         }, false);
 
-        // * canvas上でクリックされた場合は，虫眼鏡を非表示にする
+        // * canvas上でクリックされた場合は，虫眼鏡ビューを非表示にする
         // * ギャラリー上の写真がクリックされた場合は，カスタムイベントを発行する
         window.addEventListener('click', e => {
             var id = e.target.id;
@@ -97,6 +119,25 @@ class LayoutForce {
             if (id === this.stageId) {
                 none('preview');
                 none('preview_title');
+            }
+        }, false);
+
+        // ギャラリーのフォトをホバー時に虫眼鏡ビューの内容を更新する
+        // カスタムイベントを発行する
+        window.addEventListener('mouseover', e => {
+
+        }, false);
+
+        // フォトギャラリー上以外の場所でマウスストーカーする
+        window.addEventListener('mousemove', e => {
+            var cn = e.target.className;
+            if (cn === 'gphoto') {
+                var x = e.clientX + 10;
+                var y = e.clientY - 42;
+                top('preview', y);
+                left('preview', x);
+                top('preview_title', y + 55);
+                left('preview_title', x + 2);
             }
         }, false);
 

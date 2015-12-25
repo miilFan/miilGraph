@@ -41,7 +41,6 @@ var LayoutForce = (function () {
         key: 'initGraph',
         value: function initGraph() {
             // 虫眼鏡UIに必要な要素を挿入する
-
             // グラフを初期化する
             this.force = d3.layout.force().charge(this.charge).linkDistance(this.linkDistance);
             this.setGraphSize();
@@ -56,8 +55,24 @@ var LayoutForce = (function () {
             this.force.nodes(this.nodes).links(this.links);
         }
     }, {
-        key: 'renderGraph',
-        value: function renderGraph() {}
+        key: 'drawGraph',
+        value: function drawGraph() {
+            var svg = this.dom(this.stageId);
+
+            // Nodesを反映
+            var nodes = svg.selectAll('.node').data(this.nodes).enter().append('g').attr('class', 'node').call(this.force.drag);
+            svg.selectAll('.node').data(this.nodes).exit().remove();
+
+            // Linksを反映
+            var edge = svg.selectAll('.link').data(this.links).enter().attr('class', 'link').style('stroke', function (d) {}).style('stroke-width', function (d) {
+                if (d.value !== undefined) return d.value;
+                return 1;
+            });
+            svg.selectAll('link').data(this.links).exit().remove();
+        }
+    }, {
+        key: 'redrawGraph',
+        value: function redrawGraph() {}
 
         // 未登録であれば，与えられたノードを追加する
         // 第二引数が true であれば，グラフを更新する
@@ -104,7 +119,7 @@ var LayoutForce = (function () {
                 _this.setGraphSize();
             }, false);
 
-            // * canvas上でクリックされた場合は，虫眼鏡を非表示にする
+            // * canvas上でクリックされた場合は，虫眼鏡ビューを非表示にする
             // * ギャラリー上の写真がクリックされた場合は，カスタムイベントを発行する
             window.addEventListener('click', function (e) {
                 var id = e.target.id;
@@ -112,6 +127,23 @@ var LayoutForce = (function () {
                 if (id === _this.stageId) {
                     none('preview');
                     none('preview_title');
+                }
+            }, false);
+
+            // ギャラリーのフォトをホバー時に虫眼鏡ビューの内容を更新する
+            // カスタムイベントを発行する
+            window.addEventListener('mouseover', function (e) {}, false);
+
+            // フォトギャラリー上以外の場所でマウスストーカーする
+            window.addEventListener('mousemove', function (e) {
+                var cn = e.target.className;
+                if (cn === 'gphoto') {
+                    var x = e.clientX + 10;
+                    var y = e.clientY - 42;
+                    top('preview', y);
+                    left('preview', x);
+                    top('preview_title', y + 55);
+                    left('preview_title', x + 2);
                 }
             }, false);
         }

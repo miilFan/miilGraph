@@ -232,7 +232,7 @@ force.on('tick', function() {
 */
 
 var render = function () {
-    var svg = d3.select('#stage');
+    //var svg = d3.select('#stage');
     var edge = svg.selectAll('.link').data(json.edges).enter()
         .append('line')
         .attr('class', 'link')
@@ -247,11 +247,11 @@ var render = function () {
         });
     svg.selectAll('.link').data(json.edges).exit().remove();
 
-    var node = svg.selectAll('.node').data(json.nodes).enter()
+    /*var node = svg.selectAll('.node').data(json.nodes).enter()
         .append('g')
         .attr('class', 'node')
         .call(force.drag);
-    svg.selectAll('.node').data(json.nodes).exit().remove();
+    svg.selectAll('.node').data(json.nodes).exit().remove();*/
 
     var circle = node.append('circle')
         .attr('r', function (d) {
@@ -345,7 +345,7 @@ window.addEventListener('mouseover', function (e) {
     }
 })
 
-window.addEventListener('mousemove', function (e) {
+/*window.addEventListener('mousemove', function (e) {
     // ギャラリー上以外でマウスストーカーする
     if (e.target.className !== 'gphoto') {
         var x = e.clientX + 10;
@@ -355,7 +355,7 @@ window.addEventListener('mousemove', function (e) {
         document.querySelector('#preview_title').style.top = (y + 55) + 'px';
         document.querySelector('#preview_title').style.left = (x + 2) + 'px';
     }
-}, false);
+}, false);*/
 
 window.addEventListener('load', function () {
     //setStageSize();
