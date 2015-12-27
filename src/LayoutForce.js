@@ -12,7 +12,7 @@ class LayoutForce {
         this.charge = -450;
         this.linkDistance = 100;
         this.nodes = nodes || [];
-        this.links = nodes || [];
+        this.links = links || [];
         this.initGraph();
 
         this.bindWindowEvents();
@@ -41,10 +41,10 @@ class LayoutForce {
 
     drawGraph () {
         var self = this;
-        var svg = this.dom(this.stageId);
+        var svg = d3.select('#' + this.stageId);
 
         // Nodesを反映
-        var nodes = svg.selectAll('.node').data(this.nodes).enter()
+        var node = svg.selectAll('.node').data(this.nodes).enter()
             .append('g')
             .attr('class', 'node')
             .call(this.force.drag);
@@ -209,7 +209,7 @@ class LayoutForce {
 
     // グラフに関するイベントリスナ
     bindGraphEvents () {
-        var svg = this.dom(this.stageId);
+        var svg = d3.select('#' + this.stageId);
         this.force.on('tick', function() {
             svg.selectAll('.link')
                 .attr('x1', function (d) {return d.source.x;})

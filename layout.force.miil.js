@@ -18,15 +18,31 @@ var MiilGraph = (function (_LayoutForce) {
     }
 
     _createClass(MiilGraph, [{
-        key: 'appLoad',
+        key: 'parseMiilCategories',
+
+        // カテゴリリストを展開する
+        value: function parseMiilCategories(category, miilRootIdxs) {
+            var _this = this;
+
+            var me = {
+                id: category.category_id,
+                title: category.name,
+                type: 'category'
+            };
+            miilRootIdxs.forEach(function (rootNode) {
+                _this.addLink(rootNode, _this.addNode(me), false);
+            });
+        }
 
         // @Override
+    }, {
+        key: 'appLoad',
         value: function appLoad() {
-            var _this = this;
+            var _this2 = this;
 
             miil_categories.forEach(function (cate) {
                 if (cate.category_id !== 588 && cate.category_id !== 589) {
-                    _this.parseMiilCategories(cate, [_this.getNodeIdxById('miilroot')]);
+                    _this2.parseMiilCategories(cate, [_this2.getNodeIdxById('miilroot')]);
                 }
             });
             this.drawGraph();

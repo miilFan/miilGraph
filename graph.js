@@ -73,6 +73,7 @@ var parseMiilDeliciousPhotos = function (res) {
     render();
 }
 
+/*
 var parseMiilCategories = function (j, parentIdxs) {
     var me = {
         title: j.name,
@@ -85,6 +86,7 @@ var parseMiilCategories = function (j, parentIdxs) {
         addEdge(p, me)
     });
 }
+*/
 
 var updateGallery = function (d) {
     var photos = [];
@@ -263,6 +265,7 @@ var render = function () {
         .call(force.drag);
     svg.selectAll('.node').data(json.nodes).exit().remove();*/
 
+
     var circle = node.append('circle')
         .attr('r', function (d) {
             return getRbyType(d.type);
@@ -288,6 +291,7 @@ var render = function () {
                 document.querySelector('#preview_title').style.display = 'none';
             }
         })
+
         /*.on('mouseout', function (d) {
             d3.select(this).transition().duration(1000).style('r', function (d) {
                 return getRbyType(d.type)

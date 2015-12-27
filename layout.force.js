@@ -20,7 +20,7 @@ var LayoutForce = (function () {
         this.charge = -450;
         this.linkDistance = 100;
         this.nodes = nodes || [];
-        this.links = nodes || [];
+        this.links = links || [];
         this.initGraph();
 
         this.bindWindowEvents();
@@ -54,10 +54,10 @@ var LayoutForce = (function () {
             var _this = this;
 
             var self = this;
-            var svg = this.dom(this.stageId);
+            var svg = d3.select('#' + this.stageId);
 
             // Nodesを反映
-            var nodes = svg.selectAll('.node').data(this.nodes).enter().append('g').attr('class', 'node').call(this.force.drag);
+            var node = svg.selectAll('.node').data(this.nodes).enter().append('g').attr('class', 'node').call(this.force.drag);
             svg.selectAll('.node').data(this.nodes).exit().remove();
 
             // Node.Circlesを反映
@@ -219,7 +219,7 @@ var LayoutForce = (function () {
     }, {
         key: 'bindGraphEvents',
         value: function bindGraphEvents() {
-            var svg = this.dom(this.stageId);
+            var svg = d3.select('#' + this.stageId);
             this.force.on('tick', function () {
                 svg.selectAll('.link').attr('x1', function (d) {
                     return d.source.x;
