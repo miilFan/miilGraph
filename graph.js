@@ -92,6 +92,7 @@ var parseMiilCategories = function (j, parentIdxs) {
 }
 */
 
+/*
 var updateGallery = function (d) {
     var photos = [];
     var edges = json.edges;
@@ -117,6 +118,7 @@ var updateGallery = function (d) {
         gallery.appendChild(img);
     });
 }
+*/
 
 // TODO: OK
 /*

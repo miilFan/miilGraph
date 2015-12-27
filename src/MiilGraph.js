@@ -166,4 +166,37 @@ class MiilGraph extends LayoutForce {
             this.hide('preview_title');
         }
     }
+
+    // @Override
+    updatePhotoGallery (node) {
+        if (node.type !== 'subcategory' && node.type !== 'user') return;
+        var photos = [];
+        var edges = this.links;     //TODO: get API
+        // ノードの子要素である写真を得る
+        edges.forEach(function (edge) {
+            if (edge.source.id === node.id) {
+                photos.push({
+                    photo_url: edge.target.photo_url,
+                    page_url: edge.target.page_url,
+                    id: edge.target.id
+                });
+            }
+        });
+        // 写真をギャラリーに表示する
+        var gallery = document.querySelector('#gallery');
+        gallery.innerHTML = '';
+        photos.forEach(function (photo) {
+            var img = document.createElement('img');
+            img.className = 'gphoto';
+            img.src = photo.photo_url;
+            img.dataset.page_url = photo.page_url;
+            img.dataset.photo_id = photo.id;
+            gallery.appendChild(img);
+        });
+    }
+
+    // @Override
+    galleryPhotoClick (e) {
+        window.open(e.target.dataset.page_url);
+    }
 }

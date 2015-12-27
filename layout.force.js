@@ -177,7 +177,7 @@ var LayoutForce = (function () {
             window.addEventListener('mouseover', function (e) {
                 var cn = e.target.className;
                 if (cn === 'gphoto') {
-                    var nodeId = e.target.photo_id;
+                    var nodeId = e.target.dataset.photo_id;
                     var node = _this2.getNodeById(nodeId);
                     var x = node.x + 120;
                     var y = node.y;
@@ -321,11 +321,11 @@ var LayoutForce = (function () {
     }, {
         key: 'circleMouseOut',
         value: function circleMouseOut(node) {}
-
-        // 与えられたノードを展開する
     }, {
         key: 'expandNode',
-        value: function expandNode(node) {}
+        value: function expandNode(node) {
+            // 与えられたノードを展開する
+        }
     }, {
         key: 'updatePhotoGallery',
         value: function updatePhotoGallery(node) {}

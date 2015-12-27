@@ -169,7 +169,7 @@ class LayoutForce {
         window.addEventListener('mouseover', e => {
             var cn = e.target.className;
             if (cn ===  'gphoto') {
-                var nodeId = e.target.photo_id;
+                var nodeId = e.target.dataset.photo_id;
                 var node = this.getNodeById(nodeId);
                 var x = node.x + 120;
                 var y = node.y;
@@ -290,8 +290,8 @@ class LayoutForce {
     circleMouseOut (node) {
     }
 
-    // 与えられたノードを展開する
     expandNode (node) {
+        // 与えられたノードを展開する
     }
 
     updatePhotoGallery (node) {
