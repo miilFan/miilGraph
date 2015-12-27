@@ -270,7 +270,7 @@ var render = function () {
     svg.selectAll('.node').data(json.nodes).exit().remove();*/
 
 
-    var circle = node.append('circle')
+    /*var circle = node.append('circle')
         .attr('r', function (d) {
             return getRbyType(d.type);
         })
@@ -281,9 +281,9 @@ var render = function () {
             return getFillColorByType(d.type);
         })
         .on('mouseover', function (d) {
-            /*d3.select(this).transition().duration(200).style('r', function (d) {
+            d3.select(this).transition().duration(200).style('r', function (d) {
                 return getRbyType(d.type) + 4
-            });*/
+            })
             // TODO: OK
             if (d.photo_url !== undefined) {
                 document.querySelector('#preview').style.display = 'block';
@@ -294,7 +294,7 @@ var render = function () {
                 document.querySelector('#preview').style.display = 'none';
                 document.querySelector('#preview_title').style.display = 'none';
             }
-        })
+        })*/
 
         /*.on('mouseout', function (d) {
             d3.select(this).transition().duration(1000).style('r', function (d) {

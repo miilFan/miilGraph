@@ -62,8 +62,10 @@ class MiilGraph extends LayoutForce {
 
         if (type === 'category') {
             // サブカテゴリを展開する
-            console.log(7777);
             this.parseMiilSubCategories(id);
+        }else if (type === 'user') {
+            // ユーザコンテンツを展開する
+            var userName = node.title;
         }
     }
 }
