@@ -40,7 +40,7 @@ class LayoutForce {
     }
 
     drawGraph () {
-        var self = this;
+        var self =this;
         var svg = d3.select('#' + this.stageId);
 
         // Linksを反映
@@ -229,7 +229,7 @@ class LayoutForce {
     getNodeById (nodeId) {
         var nodes = this.nodes;
         return nodes.filter(node => {
-            return node.id === nodeId;
+            return node.id == nodeId;
         })[0];
     }
 
@@ -281,7 +281,7 @@ class LayoutForce {
     }
 
     getTitleByNode (node) {
-        return node.title;
+        return '';
     }
 
     circleMouseOver (node) {

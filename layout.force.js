@@ -249,7 +249,7 @@ var LayoutForce = (function () {
         value: function getNodeById(nodeId) {
             var nodes = this.nodes;
             return nodes.filter(function (node) {
-                return node.id === nodeId;
+                return node.id == nodeId;
             })[0];
         }
     }, {
@@ -313,7 +313,7 @@ var LayoutForce = (function () {
     }, {
         key: 'getTitleByNode',
         value: function getTitleByNode(node) {
-            return node.title;
+            return '';
         }
     }, {
         key: 'circleMouseOver',

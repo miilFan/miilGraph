@@ -18,6 +18,25 @@ var MiilGraph = (function (_LayoutForce) {
     }
 
     _createClass(MiilGraph, [{
+        key: 'getMiilApiUrl',
+
+        // ミイルAPIを呼ぶためのURLを構成する
+        value: function getMiilApiUrl(baseURL, seriesURL, padding) {
+            if (padding !== undefined) {
+                if (seriesURL !== undefined) {
+                    baseURL = seriesURL.replace('&limit=10', '').replace('.json', '');
+                    padding = '&' + padding;
+                } else {
+                    padding = '?' + padding;
+                }
+            } else {
+                padding = '';
+            }
+            var apiURL = baseURL + padding;
+            console.warn(apiURL);
+            return apiURL;
+        }
+    }, {
         key: 'labelShortener',
         value: function labelShortener(title, words) {
             words.forEach(function (word) {
@@ -66,6 +85,52 @@ var MiilGraph = (function (_LayoutForce) {
             this.drawGraph();
         }
 
+        // ごちそう写真を展開する
+    }, {
+        key: 'parseMiilPhotos',
+        value: function parseMiilPhotos(callback_res, queryType, self) {
+            var photos = callback_res.photos;
+            var nextUrl = callback_res.next_url;
+            var pid;
+            if (queryType === 'subcategory') {
+                pid = 'category_id';
+                nextUrl = nextUrl.replace('.?', '.json?');
+            } else {
+                pid = 'user_id';
+                nextUrl = nextUrl.replace('.?', '.json?').split('&')[0];
+            }
+
+            photos.forEach(function (photo_json) {
+                var parentNodeId = photo_json[pid];
+                var me = {
+                    id: photo_json.id,
+                    title: photo_json.title,
+                    type: 'photo',
+                    photo_url: photo_json.url,
+                    page_url: photo_json.page_url,
+                    group: parentNodeId
+                };
+                self.addNode(me);
+                var parent = self.getNodeById(parentNodeId);
+                console.info(me, parentNodeId, parent);
+                parent.nextUrl = nextUrl;
+                self.addLink(parent, me, false);
+            });
+
+            self.drawGraph();
+        }
+    }, {
+        key: 'parseMiilPhotosInUser',
+        value: function parseMiilPhotosInUser(callback_res) {
+            m.parseMiilPhotos(callback_res, 'user', m);
+        }
+    }, {
+        key: 'parseMiilPhotosInSubCate',
+        value: function parseMiilPhotosInSubCate(callback_res) {
+            // TODO: `m`を使わない場合どうすれば良いのかわからない
+            m.parseMiilPhotos(callback_res, 'subcategory', m);
+        }
+
         // @Override
     }, {
         key: 'getFillColorByNodeType',
@@ -98,8 +163,17 @@ var MiilGraph = (function (_LayoutForce) {
 
             if (type === 'category') {
                 // サブカテゴリを展開する
-                console.log(7777);
                 this.parseMiilSubCategories(id);
+            } else if (type === 'subcategory') {
+                // サブカテゴリに属するコンテンツを展開する
+                var baseApi = 'http://api.miil.me/api/photos/recent/categories/' + node.id;
+                var api = this.getMiilApiUrl(baseApi, node.nextUrl, 'callback=ps');
+                d3.jsonp(api, null);
+            } else if (type === 'user') {
+                var userName = node.title;
+                var baseApi = 'http://api.miil.me/api/users/' + userName + '/photos/public';
+                var api = this.getMiilApiUrl(baseApi, node.nextUrl, 'callback=pu');
+                d3.jsonp(api, null);
             }
         }
     }]);

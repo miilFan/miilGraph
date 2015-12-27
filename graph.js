@@ -191,17 +191,17 @@ var closeNode = function (d) {
 var extendNode = function (d) {
     var id = d.id;
     if (d.type === 'category') {
-        parseMiilSubCategories(id);
+        //parseMiilSubCategories(id);
     }else if (d.type == 'subcategory') {
-        var api ='http://miil.me/api/photos/recent/categories/' + d.id + '?callback=parseMiilDeliciousPhotos';
-        if (d.nextUrl !== undefined) {
-            api = d.nextUrl.replace('&limit=10', '').replace('.json', '')
-            api = api + '&callback=parseMiilDeliciousPhotos'
-            console.info(api)
-        }
-        d3.jsonp(api, function() {
-            console.log(arguments);
-        });
+        // var api ='http://miil.me/api/photos/recent/categories/' + d.id + '?callback=parseMiilDeliciousPhotos';
+        // if (d.nextUrl !== undefined) {
+        //     api = d.nextUrl.replace('&limit=10', '').replace('.json', '')
+        //     api = api + '&callback=parseMiilDeliciousPhotos'
+        //     console.info(api)
+        // }
+        // d3.jsonp(api, function() {
+        //     console.log(arguments);
+        // });
     }else if (d.type === 'user') {
         var userName = d.title;
         var api = 'http://api.miil.me/api/users/'+ userName +'/photos/public' + '?callback=parseMiilDeliciousUserPhotos';
