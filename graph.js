@@ -112,23 +112,28 @@ var updateGallery = function (d) {
     });
 }
 
+// TODO: OK
 var getRbyType = function (type) {
     if (type === 'user' || type === 'root') return 6;
     if (type === 'category' || type === 'subcategory') return 5;
     return 6;
 }
 
+
+// TODO: OK
 var getFillColorByType = function (type) {
     if (type === 'user' || type === 'root') return '#F4433C'
     if (type === 'category' || type === 'subcategory') return '#1F77B4'
     return '#ff9933';
 }
 
+// TODO: OK
 var getEdgeColorByType = function (type) {
     if (type === 'subcategory') return '#C5CAE9';
     return '#ddd';
 }
 
+// TODO: OK
 var getTitle = function (d) {
     if (d.type !== 'photo') return d.title;
     return '';
@@ -146,10 +151,10 @@ var setStageSize = function () {
 */
 
 // 配列json.nodesのインデックスを返す
-var addNode = function (d) {
+/*var addNode = function (d) {
     json.nodes.push(d);
     return json.nodes.length - 1;
-}
+}*/
 
 var addEdgeById = function (src, target) {
     var s = json.nodes.filter(function(n) { return n.id === src; })[0];
@@ -158,10 +163,13 @@ var addEdgeById = function (src, target) {
     json.edges.push(e);
     render();
 }
+/*
 var addEdge = function (src, target) {
     json.edges.push({source: src, target: target});
 }
+*/
 
+/*
 var getIdxByNodeId = function (id) {
     var nodes = json.nodes;
     for (var i = 0; i < nodes.length; i++) {
@@ -169,7 +177,7 @@ var getIdxByNodeId = function (id) {
         if (node.id == id) return i;
     }
 }
-
+*/
 var closeNode = function (d) {
 
 }
@@ -231,6 +239,7 @@ force.on('tick', function() {
 });
 */
 
+/*
 var render = function () {
     //var svg = d3.select('#stage');
     var edge = svg.selectAll('.link').data(json.edges).enter()
@@ -245,7 +254,8 @@ var render = function () {
         .style('stroke', function (d) {
             return getEdgeColorByType(d.target.type);
         });
-    svg.selectAll('.link').data(json.edges).exit().remove();
+*/
+    //svg.selectAll('.link').data(json.edges).exit().remove();
 
     /*var node = svg.selectAll('.node').data(json.nodes).enter()
         .append('g')
@@ -264,9 +274,10 @@ var render = function () {
             return getFillColorByType(d.type);
         })
         .on('mouseover', function (d) {
-            d3.select(this).transition().duration(200).style('r', function (d) {
+            /*d3.select(this).transition().duration(200).style('r', function (d) {
                 return getRbyType(d.type) + 4
-            });
+            });*/
+            // TODO: OK
             if (d.photo_url !== undefined) {
                 document.querySelector('#preview').style.display = 'block';
                 document.querySelector('#preview').style.backgroundImage = 'url('+ d.photo_url +')';
@@ -277,17 +288,17 @@ var render = function () {
                 document.querySelector('#preview_title').style.display = 'none';
             }
         })
-        .on('mouseout', function (d) {
+        /*.on('mouseout', function (d) {
             d3.select(this).transition().duration(1000).style('r', function (d) {
                 return getRbyType(d.type)
             });
-        })
-        .on('dblclick', function (d) {
+        })*/
+        /*.on('dblclick', function (d) {
             extendNode(d)
-        });
+        });*/
 
     var text = node.append('text')
-        .attr('dx', function (d) {
+        /*.attr('dx', function (d) {
             return 12;
         })
         .attr('dy', '.35px')
@@ -301,14 +312,14 @@ var render = function () {
             }else {
                 closeNode(d)
             }
-        })
-        .on('click', function (d) {
+        })*/
+        /*.on('click', function (d) {
             if (d.type === 'subcategory' || d.type === 'user') {
                 updateGallery(d);
             }
-        })
+        })*/
 
-    force.start();
+    //force.start();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,12 +329,12 @@ var render = function () {
 window.addEventListener('click', function (e) {
     //var id = e.target.id;
     //var cn = e.target.className;
-    if (id === 'stage') {
+    /*if (id === 'stage') {
         //document.querySelector('#preview').style.display = 'none';
         //document.querySelector('#preview_title').style.display = 'none';
     }else if (cn === 'gphoto') {
         window.open(e.target.dataset.page_url);
-    }
+    }*/
 });
 
 //window.addEventListener('mouseover', function (e) {
@@ -359,11 +370,11 @@ window.addEventListener('click', function (e) {
 
 window.addEventListener('load', function () {
     //setStageSize();
-
+    // TODO: OK
     miil_categories.forEach(function (cate) {
         if (cate.category_id !== 588 && cate.category_id !== 589) {
             parseMiilCategories(cate, [getIdxByNodeId('miilroot')]);
         }
     });
-    render();
+    //render();
 }, false);

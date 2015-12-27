@@ -1,1 +1,2 @@
-babel src/*.js > main.js
+babel src/LayoutForce.js > layout.force.js
+babel src/MiilGraph.js > layout.force.miil.js

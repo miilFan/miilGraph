@@ -26,15 +26,9 @@ var LayoutForce = (function () {
         this.bindWindowEvents();
     }
 
-    // 与えられたIDのノードを展開する
-    // 第二引数が true であれば，グラフを更新して子要素を表示する
+    // 与えられたIDのノードの子要素を除去する
 
     _createClass(LayoutForce, [{
-        key: 'expandNode',
-        value: function expandNode(id) {}
-
-        // 与えられたIDのノードの子要素を除去する
-    }, {
         key: 'closeNode',
         value: function closeNode(id) {}
     }, {
@@ -57,33 +51,81 @@ var LayoutForce = (function () {
     }, {
         key: 'drawGraph',
         value: function drawGraph() {
+            var _this = this;
+
+            var self = this;
             var svg = this.dom(this.stageId);
 
             // Nodesを反映
             var nodes = svg.selectAll('.node').data(this.nodes).enter().append('g').attr('class', 'node').call(this.force.drag);
             svg.selectAll('.node').data(this.nodes).exit().remove();
 
+            // Node.Circlesを反映
+            var circle = node.append('circle').attr('r', function (d) {
+                return _this.getRadiusByNodeType(d.type);
+            }).attr('id', function (d) {
+                return d.id;
+            }).style('fill', function (d) {
+                return _this.getFillColorByNodeType(d.type);
+            }).on('mouseover', function (d) {
+                d3.select(this).transition().duration(200).style('r', function (d) {
+                    return self.getRadiusByNodeType(d.type) + 4;
+                });
+                self.circleMouseOver(d);
+            }).on('mouseout', function (d) {
+                d3.select(this).transition().duration(1000).style('r', function (d) {
+                    return self.getRadiusByNodeType(d.type);
+                });
+                self.circleMouseOut(d);
+            }).on('dbclick', function (d) {
+                self.expandNode(d);
+            });
+
+            // Labelsを反映
+            var text = node.append('text').attr('dx', 12).attr('dy', 35).text(function (d) {
+                return _this.getTitleByNode(d);
+            }).style('stroke', '#9e9e9e').on('click', function (d) {
+                self.updatePhotoGallery(d);
+            }).on('dbclick', function (d) {
+                if (d.open === undefined || d.open === false) {
+                    self.expandNode(d);
+                } else {
+                    self.closeNode(d);
+                }
+            });
+
             // Linksを反映
-            var edge = svg.selectAll('.link').data(this.links).enter().attr('class', 'link').style('stroke', function (d) {}).style('stroke-width', function (d) {
+            var edge = svg.selectAll('.link').data(this.links).enter().append('lien').attr('class', 'link').style('stroke', function (d) {
+                return _this.getEdgeColorByTargetNodeType(d.target.type);
+            }).style('stroke-width', function (d) {
                 if (d.value !== undefined) return d.value;
                 return 1;
             });
+
             svg.selectAll('link').data(this.links).exit().remove();
+
+            this.force.start();
         }
-    }, {
-        key: 'redrawGraph',
-        value: function redrawGraph() {}
 
         // 未登録であれば，与えられたノードを追加する
         // 第二引数が true であれば，グラフを更新する
     }, {
         key: 'addNode',
-        value: function addNode(node, redraw) {}
+        value: function addNode(node, redraw) {
+            if (redraw === undefined) redraw = false;
+            this.nodes.push(node);
+            if (redraw) {
+                this.drawGraph();
+            }
+            return this.nodes.length - 1;
+        }
 
         // 未登録であれば，与えられたリンクを追加する
     }, {
         key: 'addLink',
-        value: function addLink(link, redraw) {}
+        value: function addLink(srcNode, targetNode, redraw) {
+            this.links.push({ source: srcNode, target: targetNode });
+        }
 
         // 与えられたIDを持つノードを削除する
         // 第二引数が true であれば，グラフを更新する
@@ -100,10 +142,10 @@ var LayoutForce = (function () {
     }, {
         key: 'setGraphSize',
         value: function setGraphSize() {
-            var width = util.w - this.widthPhotoGallery;
-            var height = util.h;
-            this.dom(this.stageId).setAttribute(width, width + 'px');
-            this.dom(this.stageId).setAttribute(height, height + 'px');
+            var width = window.innerWidth - this.widthPhotoGallery;
+            var height = window.innerHeight;
+            this.dom(this.stageId).setAttribute('width', width + 'px');
+            this.dom(this.stageId).setAttribute('height', height + 'px');
             this.dom('gallery').style.height = height + 'px';
             this.force.size([width, height]);
         }
@@ -112,11 +154,11 @@ var LayoutForce = (function () {
     }, {
         key: 'bindWindowEvents',
         value: function bindWindowEvents() {
-            var _this = this;
+            var _this2 = this;
 
             // ウィンドウのサイズが変更されたとき，canvasのサイズを再設定する
             window.addEventListener('resize', function (e) {
-                _this.setGraphSize();
+                _this2.setGraphSize();
             }, false);
 
             // * canvas上でクリックされた場合は，虫眼鏡ビューを非表示にする
@@ -124,9 +166,11 @@ var LayoutForce = (function () {
             window.addEventListener('click', function (e) {
                 var id = e.target.id;
                 var cn = e.target.className;
-                if (id === _this.stageId) {
-                    _this.hide('preview');
-                    _this.hide('preview_title');
+                if (id === _this2.stageId) {
+                    _this2.hide('preview');
+                    _this2.hide('preview_title');
+                } else if (cn === 'gphoto') {
+                    _this2.galleryPhotoClick(e);
                 }
             }, false);
 
@@ -135,18 +179,18 @@ var LayoutForce = (function () {
                 var cn = e.target.className;
                 if (cn === 'gphoto') {
                     var nodeId = e.target.photo_id;
-                    var node = _this.getNodeById(nodeId);
+                    var node = _this2.getNodeById(nodeId);
                     var x = node.x + 120;
                     var y = node.y;
-                    _this.top('preview', y);
-                    _this.left('preview', x);
-                    _this.top('preview_title', y + 55);
-                    _this.left('preview_title', x + 2);
+                    _this2.top('preview', y);
+                    _this2.left('preview', x);
+                    _this2.top('preview_title', y + 55);
+                    _this2.left('preview_title', x + 2);
                     // 虫眼鏡のフォトとして，src属性を参照する
-                    _this.bgImg('preview', e.target.src);
-                    _this.show('preview');
-                    _this.dom('preview_title').innerHTML = node.title;
-                    _this.show('preview_title');
+                    _this2.bgImg('preview', e.target.src);
+                    _this2.show('preview');
+                    _this2.dom('preview_title').innerHTML = node.title;
+                    _this2.show('preview_title');
                 }
             }, false);
 
@@ -156,12 +200,19 @@ var LayoutForce = (function () {
                 if (cn === 'gphoto') {
                     var x = e.clientX + 10;
                     var y = e.clientY - 42;
-                    _this.top('preview', y);
-                    _this.left('preview', x);
-                    _this.top('preview_title', y + 55);
-                    _this.left('preview_title', x + 2);
+                    _this2.top('preview', y);
+                    _this2.left('preview', x);
+                    _this2.top('preview_title', y + 55);
+                    _this2.left('preview_title', x + 2);
                 }
             }, false);
+
+            /*
+            window.addEventListener('load', e => {
+                this.appLoad(e);
+                drawGraph();
+            });
+            */
         }
 
         // グラフに関するイベントリスナ
@@ -202,6 +253,15 @@ var LayoutForce = (function () {
                 return node.id === nodeId;
             })[0];
         }
+    }, {
+        key: 'getNodeIdxById',
+        value: function getNodeIdxById(nodeId) {
+            var nodes = this.nodes;
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                if (node.id == nodeId) return i;
+            }
+        }
 
         // DOM操作関連
     }, {
@@ -234,56 +294,50 @@ var LayoutForce = (function () {
         value: function bgImg(id, src) {
             this.dom(id).style.backgroundImage = 'url(' + src + ')';
         }
+
+        /* 以下のメソッドは，適宜Overrideして定義する */
+    }, {
+        key: 'getEdgeColorByTargetNodeType',
+        value: function getEdgeColorByTargetNodeType(type) {
+            return '#ddd';
+        }
+    }, {
+        key: 'getRadiusByNodeType',
+        value: function getRadiusByNodeType(type) {
+            return 6;
+        }
+    }, {
+        key: 'getFillColorByNodeType',
+        value: function getFillColorByNodeType(type) {
+            return '#ff9933';
+        }
+    }, {
+        key: 'getTitleByNode',
+        value: function getTitleByNode(node) {
+            return node.title;
+        }
+    }, {
+        key: 'circleMouseOver',
+        value: function circleMouseOver(node) {}
+    }, {
+        key: 'circleMouseOut',
+        value: function circleMouseOut(node) {}
+
+        // 与えられたノードを展開する
+    }, {
+        key: 'expandNode',
+        value: function expandNode(node) {}
+    }, {
+        key: 'updatePhotoGallery',
+        value: function updatePhotoGallery(node) {}
+    }, {
+        key: 'galleryPhotoClick',
+        value: function galleryPhotoClick(ev) {}
+    }, {
+        key: 'appLoad',
+        value: function appLoad(ev) {}
     }]);
 
     return LayoutForce;
 })();
-"use strict";
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var MiilGraph = function MiilGraph() {
-    _classCallCheck(this, MiilGraph);
-};
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var Util = (function () {
-    function Util(w, g) {
-        _classCallCheck(this, Util);
-
-        this.g = g || document;
-        this.w = w || window;
-    }
-
-    /* Gets DOM elements which are detected CSS selector */
-
-    _createClass(Util, [{
-        key: 'getDom',
-        value: function getDom(selector) {
-            if (selector === undefined) return false;
-            return document.querySelector(selector);
-        }
-    }, {
-        key: 'getDoms',
-        value: function getDoms(selector) {
-            if (selector === undefined) return false;
-            return document.querySelectorAll(selector);
-        }
-
-        /* Get DOM element which has a given id */
-    }, {
-        key: 'getDomById',
-        value: function getDomById(id) {
-            return this.getDom('#' + id);
-        }
-    }]);
-
-    return Util;
-})();
-
-var util = new Util();
 

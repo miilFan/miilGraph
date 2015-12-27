@@ -18,12 +18,6 @@ class LayoutForce {
         this.bindWindowEvents();
     }
 
-    // 与えられたIDのノードを展開する
-    // 第二引数が true であれば，グラフを更新して子要素を表示する
-    expandNode (id) {
-
-    }
-
     // 与えられたIDのノードの子要素を除去する
     closeNode (id) {
 
@@ -46,6 +40,7 @@ class LayoutForce {
     }
 
     drawGraph () {
+        var self = this;
         var svg = this.dom(this.stageId);
 
         // Nodesを反映
@@ -55,32 +50,79 @@ class LayoutForce {
             .call(this.force.drag);
         svg.selectAll('.node').data(this.nodes).exit().remove();
 
+        // Node.Circlesを反映
+        var circle = node.append('circle')
+            .attr('r', d => {
+                return this.getRadiusByNodeType(d.type);
+            })
+            .attr('id', d => {return d.id;})
+            .style('fill', d => {
+                return this.getFillColorByNodeType(d.type);
+            })
+            .on('mouseover', function (d) {
+                d3.select(this).transition().duration(200).style('r', function (d) {
+                    return self.getRadiusByNodeType(d.type) + 4;
+                });
+                self.circleMouseOver(d);
+            })
+            .on('mouseout',function (d) {
+                d3.select(this).transition().duration(1000).style('r', function (d) {
+                    return self.getRadiusByNodeType(d.type)
+                });
+                self.circleMouseOut(d);
+            })
+            .on('dbclick', function (d) {
+                self.expandNode(d)
+            });
+
+        // Labelsを反映
+        var text = node.append('text')
+            .attr('dx', 12)
+            .attr('dy', 35)
+            .text(d => {return this.getTitleByNode(d);})
+            .style('stroke', '#9e9e9e')
+            .on('click', function (d) {
+                self.updatePhotoGallery(d);
+            })
+            .on('dbclick', function (d) {
+                if (d.open === undefined || d.open === false) {
+                    self.expandNode(d);
+                }else {
+                    self.closeNode(d);
+                }
+            })
+
         // Linksを反映
         var edge = svg.selectAll('.link').data(this.links).enter()
+            .append('lien')
             .attr('class', 'link')
             .style('stroke', d => {
-
+                return this.getEdgeColorByTargetNodeType(d.target.type);
             })
             .style('stroke-width', d => {
                 if (d.value !== undefined) return d.value;
                 return 1;
-            })
+            });
+
         svg.selectAll('link').data(this.links).exit().remove();
-    }
 
-    redrawGraph () {
-
+        this.force.start();
     }
 
     // 未登録であれば，与えられたノードを追加する
     // 第二引数が true であれば，グラフを更新する
     addNode (node, redraw) {
-
+        if (redraw === undefined) redraw = false;
+        this.nodes.push(node);
+        if (redraw) {
+            this.drawGraph();
+        }
+        return this.nodes.length - 1;
     }
 
     // 未登録であれば，与えられたリンクを追加する
-    addLink (link, redraw) {
-
+    addLink (srcNode, targetNode, redraw) {
+        this.links.push({source: srcNode, target: targetNode});
     }
 
     // 与えられたIDを持つノードを削除する
@@ -96,10 +138,10 @@ class LayoutForce {
 
     // canvasサイズを設定する
     setGraphSize () {
-        var width = util.w - this.widthPhotoGallery;
-        var height = util.h;
-        this.dom(this.stageId).setAttribute(width, width + 'px');
-        this.dom(this.stageId).setAttribute(height, height + 'px');
+        var width = window.innerWidth - this.widthPhotoGallery;
+        var height = window.innerHeight;
+        this.dom(this.stageId).setAttribute('width', width + 'px');
+        this.dom(this.stageId).setAttribute('height', height + 'px');
         this.dom('gallery').style.height = height + 'px';
         this.force.size([width, height]);
     }
@@ -119,6 +161,8 @@ class LayoutForce {
             if (id === this.stageId) {
                 this.hide('preview');
                 this.hide('preview_title');
+            }else if (cn === 'gphoto') {
+                this.galleryPhotoClick(e);
             }
         }, false);
 
@@ -155,7 +199,12 @@ class LayoutForce {
             }
         }, false);
 
-
+        /*
+        window.addEventListener('load', e => {
+            this.appLoad(e);
+            drawGraph();
+        });
+        */
     }
 
     // グラフに関するイベントリスナ
@@ -185,6 +234,14 @@ class LayoutForce {
         })[0];
     }
 
+    getNodeIdxById (nodeId) {
+        var nodes = this.nodes;
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            if (node.id == nodeId) return i;
+        }
+    }
+
     // DOM操作関連
     dom (id) {
         return document.getElementById(id);
@@ -208,5 +265,42 @@ class LayoutForce {
 
     bgImg (id, src) {
         this.dom(id).style.backgroundImage = 'url('+ src +')';
+    }
+
+
+    /* 以下のメソッドは，適宜Overrideして定義する */
+    getEdgeColorByTargetNodeType (type) {
+        return '#ddd';
+    }
+
+    getRadiusByNodeType (type) {
+        return 6;
+    }
+
+    getFillColorByNodeType (type) {
+        return '#ff9933';
+    }
+
+    getTitleByNode (node) {
+        return node.title;
+    }
+
+    circleMouseOver (node) {
+    }
+
+    circleMouseOut (node) {
+    }
+
+    // 与えられたノードを展開する
+    expandNode (node) {
+    }
+
+    updatePhotoGallery (node) {
+    }
+
+    galleryPhotoClick (ev) {
+    }
+
+    appLoad (ev) {
     }
 }
