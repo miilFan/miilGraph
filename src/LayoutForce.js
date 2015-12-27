@@ -117,15 +117,29 @@ class LayoutForce {
             var id = e.target.id;
             var cn = e.target.className;
             if (id === this.stageId) {
-                none('preview');
-                none('preview_title');
+                this.hide('preview');
+                this.hide('preview_title');
             }
         }, false);
 
         // ギャラリーのフォトをホバー時に虫眼鏡ビューの内容を更新する
-        // カスタムイベントを発行する
         window.addEventListener('mouseover', e => {
-
+            var cn = e.target.className;
+            if (cn ===  'gphoto') {
+                var nodeId = e.target.photo_id;
+                var node = this.getNodeById(nodeId);
+                var x = node.x + 120;
+                var y = node.y;
+                this.top('preview', y);
+                this.left('preview', x);
+                this.top('preview_title', y + 55);
+                this.left('preview_title', x + 2);
+                // 虫眼鏡のフォトとして，src属性を参照する
+                this.bgImg('preview', e.target.src);
+                this.show('preview');
+                this.dom('preview_title').innerHTML = node.title;
+                this.show('preview_title');
+            }
         }, false);
 
         // フォトギャラリー上以外の場所でマウスストーカーする
@@ -134,10 +148,10 @@ class LayoutForce {
             if (cn === 'gphoto') {
                 var x = e.clientX + 10;
                 var y = e.clientY - 42;
-                top('preview', y);
-                left('preview', x);
-                top('preview_title', y + 55);
-                left('preview_title', x + 2);
+                this.top('preview', y);
+                this.left('preview', x);
+                this.top('preview_title', y + 55);
+                this.left('preview_title', x + 2);
             }
         }, false);
 
@@ -161,6 +175,14 @@ class LayoutForce {
                 .attr('x', function (d) {return d.x;})
                 .attr('y', function (d) {return d.y;});
         });
+    }
+
+    // IDを指定してnodeを取得
+    getNodeById (nodeId) {
+        var nodes = this.nodes;
+        return nodes.filter(node => {
+            return node.id === nodeId;
+        })[0];
     }
 
     // DOM操作関連

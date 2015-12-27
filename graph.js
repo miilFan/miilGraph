@@ -326,24 +326,24 @@ window.addEventListener('click', function (e) {
     }
 });
 
-window.addEventListener('mouseover', function (e) {
-    var elm = e.target;
-    var cn = elm.className;
-    if (cn === 'gphoto') {
-        var nodeId = elm.dataset.photo_id;
-        var node = json.nodes[getIdxByNodeId(nodeId)];
-        var x = node.x + 120;
-        var y = node.y;
-        document.querySelector('#preview').style.top = y + 'px';
-        document.querySelector('#preview').style.left = x + 'px';
-        document.querySelector('#preview_title').style.top = (y + 55) + 'px';
-        document.querySelector('#preview_title').style.left = (x + 2) + 'px';
-        document.querySelector('#preview').style.backgroundImage = 'url('+ elm.src +')';
-        document.querySelector('#preview').style.display = 'block';
-        document.querySelector('#preview_title').innerHTML = node.title;
-        document.querySelector('#preview_title').style.display = 'block';
-    }
-})
+//window.addEventListener('mouseover', function (e) {
+    //var elm = e.target;
+    //var cn = elm.className;
+    //if (cn === 'gphoto') {
+        //var nodeId = elm.dataset.photo_id;
+        //var node = json.nodes[getIdxByNodeId(nodeId)];
+        //var x = node.x + 120;
+        //var y = node.y;
+        //document.querySelector('#preview').style.top = y + 'px';
+        //document.querySelector('#preview').style.left = x + 'px';
+        //document.querySelector('#preview_title').style.top = (y + 55) + 'px';
+        //document.querySelector('#preview_title').style.left = (x + 2) + 'px';
+        //document.querySelector('#preview').style.backgroundImage = 'url('+ elm.src +')';
+        //document.querySelector('#preview').style.display = 'block';
+        //document.querySelector('#preview_title').innerHTML = node.title;
+        //document.querySelector('#preview_title').style.display = 'block';
+    //}
+//})
 
 /*window.addEventListener('mousemove', function (e) {
     // ギャラリー上以外でマウスストーカーする

@@ -125,14 +125,30 @@ var LayoutForce = (function () {
                 var id = e.target.id;
                 var cn = e.target.className;
                 if (id === _this.stageId) {
-                    none('preview');
-                    none('preview_title');
+                    _this.hide('preview');
+                    _this.hide('preview_title');
                 }
             }, false);
 
             // ギャラリーのフォトをホバー時に虫眼鏡ビューの内容を更新する
-            // カスタムイベントを発行する
-            window.addEventListener('mouseover', function (e) {}, false);
+            window.addEventListener('mouseover', function (e) {
+                var cn = e.target.className;
+                if (cn === 'gphoto') {
+                    var nodeId = e.target.photo_id;
+                    var node = _this.getNodeById(nodeId);
+                    var x = node.x + 120;
+                    var y = node.y;
+                    _this.top('preview', y);
+                    _this.left('preview', x);
+                    _this.top('preview_title', y + 55);
+                    _this.left('preview_title', x + 2);
+                    // 虫眼鏡のフォトとして，src属性を参照する
+                    _this.bgImg('preview', e.target.src);
+                    _this.show('preview');
+                    _this.dom('preview_title').innerHTML = node.title;
+                    _this.show('preview_title');
+                }
+            }, false);
 
             // フォトギャラリー上以外の場所でマウスストーカーする
             window.addEventListener('mousemove', function (e) {
@@ -140,10 +156,10 @@ var LayoutForce = (function () {
                 if (cn === 'gphoto') {
                     var x = e.clientX + 10;
                     var y = e.clientY - 42;
-                    top('preview', y);
-                    left('preview', x);
-                    top('preview_title', y + 55);
-                    left('preview_title', x + 2);
+                    _this.top('preview', y);
+                    _this.left('preview', x);
+                    _this.top('preview_title', y + 55);
+                    _this.left('preview_title', x + 2);
                 }
             }, false);
         }
@@ -175,6 +191,16 @@ var LayoutForce = (function () {
                     return d.y;
                 });
             });
+        }
+
+        // IDを指定してnodeを取得
+    }, {
+        key: 'getNodeById',
+        value: function getNodeById(nodeId) {
+            var nodes = this.nodes;
+            return nodes.filter(function (node) {
+                return node.id === nodeId;
+            })[0];
         }
 
         // DOM操作関連
