@@ -222,7 +222,7 @@ var MiilGraph = (function (_LayoutForce) {
         value: function updatePhotoGallery(node) {
             if (node.type !== 'subcategory' && node.type !== 'user') return;
             var photos = [];
-            var edges = this.links; //TODO: get API
+            var edges = this.getLinksAll();
             // ノードの子要素である写真を得る
             edges.forEach(function (edge) {
                 if (edge.source.id === node.id) {

@@ -124,6 +124,14 @@ class LayoutForce {
         this.links.push({source: srcNode, target: targetNode});
     }
 
+    getLinksAll () {
+        return this.links;
+    }
+
+    getNodesAll () {
+        return this.nodes;
+    }
+
     // 与えられたIDを持つノードを削除する
     // 第二引数が true であれば，グラフを更新する
     removeNodeById (id, redraw) {

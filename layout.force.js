@@ -125,6 +125,16 @@ var LayoutForce = (function () {
         value: function addLink(srcNode, targetNode, redraw) {
             this.links.push({ source: srcNode, target: targetNode });
         }
+    }, {
+        key: 'getLinksAll',
+        value: function getLinksAll() {
+            return this.links;
+        }
+    }, {
+        key: 'getNodesAll',
+        value: function getNodesAll() {
+            return this.nodes;
+        }
 
         // 与えられたIDを持つノードを削除する
         // 第二引数が true であれば，グラフを更新する
