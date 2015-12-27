@@ -1,9 +1,11 @@
+/*
 var labelShortener = function (title, words) {
     words.forEach(function (word) {
         title = title.replace(word, '');
     })
     return title;
-}
+}*/
+/*
 var parseMiilSubCategories = function (parentId) {
     miil_categories.forEach(function (cate) {
         if (cate.category_id === parentId) {
@@ -23,7 +25,7 @@ var parseMiilSubCategories = function (parentId) {
     });
     render();
 }
-
+*/
 var parseMiilDeliciousUserPhotos  = function (res) {
     var photos = res.photos;
     var nextUrl = res.next_url;
@@ -123,11 +125,13 @@ var getRbyType = function (type) {
 
 
 // TODO: OK
+/*
 var getFillColorByType = function (type) {
     if (type === 'user' || type === 'root') return '#F4433C'
     if (type === 'category' || type === 'subcategory') return '#1F77B4'
     return '#ff9933';
 }
+*/
 
 // TODO: OK
 var getEdgeColorByType = function (type) {
@@ -375,10 +379,12 @@ window.addEventListener('click', function (e) {
 window.addEventListener('load', function () {
     //setStageSize();
     // TODO: OK
+    /*
     miil_categories.forEach(function (cate) {
         if (cate.category_id !== 588 && cate.category_id !== 589) {
             parseMiilCategories(cate, [getIdxByNodeId('miilroot')]);
         }
     });
+    */
     //render();
 }, false);

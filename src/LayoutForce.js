@@ -43,6 +43,19 @@ class LayoutForce {
         var self = this;
         var svg = d3.select('#' + this.stageId);
 
+        // Linksを反映
+        var edge = svg.selectAll('.link').data(this.links).enter()
+            .append('line')
+            .attr('class', 'link')
+            .style('stroke', d => {
+                return this.getEdgeColorByTargetNodeType(d.target.type);
+            })
+            .style('stroke-width', d => {
+                if (d.value !== undefined) return d.value;
+                return 1;
+            });
+        svg.selectAll('link').data(this.links).exit().remove();
+
         // Nodesを反映
         var node = svg.selectAll('.node').data(this.nodes).enter()
             .append('g')
@@ -71,40 +84,26 @@ class LayoutForce {
                 });
                 self.circleMouseOut(d);
             })
-            .on('dbclick', function (d) {
+            .on('dblclick', function (d) {
                 self.expandNode(d)
             });
 
         // Labelsを反映
         var text = node.append('text')
-            .attr('dx', 12)
-            .attr('dy', 35)
+            .attr('dx', '12px')
+            .attr('dy', '.35px')
             .text(d => {return this.getTitleByNode(d);})
             .style('stroke', '#9e9e9e')
             .on('click', function (d) {
                 self.updatePhotoGallery(d);
             })
-            .on('dbclick', function (d) {
+            .on('dblclick', function (d) {
                 if (d.open === undefined || d.open === false) {
                     self.expandNode(d);
                 }else {
                     self.closeNode(d);
                 }
-            })
-
-        // Linksを反映
-        var edge = svg.selectAll('.link').data(this.links).enter()
-            .append('lien')
-            .attr('class', 'link')
-            .style('stroke', d => {
-                return this.getEdgeColorByTargetNodeType(d.target.type);
-            })
-            .style('stroke-width', d => {
-                if (d.value !== undefined) return d.value;
-                return 1;
             });
-
-        svg.selectAll('link').data(this.links).exit().remove();
 
         this.force.start();
     }
