@@ -112,7 +112,6 @@ var MiilGraph = (function (_LayoutForce) {
                 };
                 self.addNode(me);
                 var parent = self.getNodeById(parentNodeId);
-                console.info(me, parentNodeId, parent);
                 parent.nextUrl = nextUrl;
                 self.addLink(parent, me, false);
             });
@@ -174,6 +173,46 @@ var MiilGraph = (function (_LayoutForce) {
                 var baseApi = 'http://api.miil.me/api/users/' + userName + '/photos/public';
                 var api = this.getMiilApiUrl(baseApi, node.nextUrl, 'callback=pu');
                 d3.jsonp(api, null);
+            }
+        }
+
+        // @Override
+    }, {
+        key: 'getRadiusByNodeType',
+        value: function getRadiusByNodeType(type) {
+            if (type === 'user' || type === 'root') return 6;
+            if (type === 'category' || type === 'subcategory') return 5;
+            return 6;
+        }
+
+        // @Override
+    }, {
+        key: 'getEdgeColorByType',
+        value: function getEdgeColorByType(type) {
+            if (type === 'subcategory') return '#C5CAE9';
+            return '#ddd';
+        }
+
+        // @Override
+    }, {
+        key: 'getTitleByNode',
+        value: function getTitleByNode(node) {
+            if (node.type !== 'photo') return node.title;
+            return '';
+        }
+
+        // @Override
+    }, {
+        key: 'circleMouseOver',
+        value: function circleMouseOver(node) {
+            if (node.photo_url !== undefined) {
+                this.bgImg('preview', node.photo_url);
+                this.show('preview');
+                this.dom('preview_title').innerHTML = node.title;
+                this.show('preview_title');
+            } else {
+                this.hide('preview');
+                this.hide('preview_title');
             }
         }
     }]);

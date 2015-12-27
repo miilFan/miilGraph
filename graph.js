@@ -26,6 +26,7 @@ var parseMiilSubCategories = function (parentId) {
     render();
 }
 */
+/*
 var parseMiilDeliciousUserPhotos  = function (res) {
     var photos = res.photos;
     var nextUrl = res.next_url;
@@ -74,6 +75,7 @@ var parseMiilDeliciousPhotos = function (res) {
     });
     render();
 }
+*/
 
 /*
 var parseMiilCategories = function (j, parentIdxs) {
@@ -117,11 +119,13 @@ var updateGallery = function (d) {
 }
 
 // TODO: OK
+/*
 var getRbyType = function (type) {
     if (type === 'user' || type === 'root') return 6;
     if (type === 'category' || type === 'subcategory') return 5;
     return 6;
 }
+*/
 
 
 // TODO: OK
@@ -134,16 +138,20 @@ var getFillColorByType = function (type) {
 */
 
 // TODO: OK
+/*
 var getEdgeColorByType = function (type) {
     if (type === 'subcategory') return '#C5CAE9';
     return '#ddd';
 }
+*/
 
 // TODO: OK
+/*
 var getTitle = function (d) {
     if (d.type !== 'photo') return d.title;
     return '';
 }
+*/
 
 /*
 var setStageSize = function () {
@@ -203,16 +211,16 @@ var extendNode = function (d) {
         //     console.log(arguments);
         // });
     }else if (d.type === 'user') {
-        var userName = d.title;
-        var api = 'http://api.miil.me/api/users/'+ userName +'/photos/public' + '?callback=parseMiilDeliciousUserPhotos';
-        if (d.nextUrl !== undefined) {
-            api = d.nextUrl.replace('&limit=10', '').replace('.json', '')
-            api = api + '&callback=parseMiilDeliciousUserPhotos'
-            console.info(api)
-        }
-        d3.jsonp(api, function() {
-            console.log(arguments);
-        });
+        // var userName = d.title;
+        // var api = 'http://api.miil.me/api/users/'+ userName +'/photos/public' + '?callback=parseMiilDeliciousUserPhotos';
+        // if (d.nextUrl !== undefined) {
+        //     api = d.nextUrl.replace('&limit=10', '').replace('.json', '')
+        //     api = api + '&callback=parseMiilDeliciousUserPhotos'
+        //     console.info(api)
+        // }
+        // d3.jsonp(api, function() {
+        //     console.log(arguments);
+        // });
     }
 }
 

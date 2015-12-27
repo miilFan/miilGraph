@@ -196,7 +196,7 @@ var LayoutForce = (function () {
             // フォトギャラリー上以外の場所でマウスストーカーする
             window.addEventListener('mousemove', function (e) {
                 var cn = e.target.className;
-                if (cn === 'gphoto') {
+                if (cn !== 'gphoto') {
                     var x = e.clientX + 10;
                     var y = e.clientY - 42;
                     _this2.top('preview', y);

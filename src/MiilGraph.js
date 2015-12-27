@@ -133,4 +133,37 @@ class MiilGraph extends LayoutForce {
             d3.jsonp(api, null);
         }
     }
+
+
+    // @Override
+    getRadiusByNodeType (type) {
+        if (type === 'user' || type === 'root') return 6;
+        if (type === 'category' || type === 'subcategory') return 5;
+        return 6;
+    }
+
+    // @Override
+    getEdgeColorByType (type) {
+        if (type === 'subcategory') return '#C5CAE9';
+        return '#ddd';
+    }
+
+    // @Override
+    getTitleByNode (node) {
+        if (node.type !== 'photo') return node.title;
+        return '';
+    }
+
+    // @Override
+    circleMouseOver (node) {
+        if (node.photo_url !== undefined) {
+            this.bgImg('preview', node.photo_url);
+            this.show('preview');
+            this.dom('preview_title').innerHTML = node.title;
+            this.show('preview_title');
+        }else {
+            this.hide('preview');
+            this.hide('preview_title');
+        }
+    }
 }
