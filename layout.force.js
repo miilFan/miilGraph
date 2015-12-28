@@ -87,7 +87,11 @@ var LayoutForce = (function () {
                 });
                 self.circleMouseOut(d);
             }).on('dblclick', function (d) {
-                self.expandNode(d);
+                if (d.open === undefined || d.open === false) {
+                    self.expandNode(d);
+                } else {
+                    self.closeNode(d);
+                }
             });
 
             // Labelsを反映
@@ -227,13 +231,6 @@ var LayoutForce = (function () {
                     _this2.left('preview_title', x + 2);
                 }
             }, false);
-
-            /*
-            window.addEventListener('load', e => {
-                this.appLoad(e);
-                drawGraph();
-            });
-            */
         }
 
         // グラフに関するイベントリスナ

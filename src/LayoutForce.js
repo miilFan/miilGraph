@@ -85,7 +85,11 @@ class LayoutForce {
                 self.circleMouseOut(d);
             })
             .on('dblclick', function (d) {
-                self.expandNode(d)
+                if (d.open === undefined || d.open === false) {
+                    self.expandNode(d);
+                }else {
+                    self.closeNode(d);
+                }
             });
 
         // Labelsを反映
@@ -215,13 +219,6 @@ class LayoutForce {
                 this.left('preview_title', x + 2);
             }
         }, false);
-
-        /*
-        window.addEventListener('load', e => {
-            this.appLoad(e);
-            drawGraph();
-        });
-        */
     }
 
     // グラフに関するイベントリスナ
