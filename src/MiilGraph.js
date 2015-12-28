@@ -44,7 +44,8 @@ class MiilGraph extends LayoutForce {
                     var me = {
                         title: this.labelShortener(subcate.name, ['手料理：', '（その他）', '【特集】']),
                         id: subcate.category_id,
-                        type: 'subcategory'
+                        type: 'subcategory',
+                        open: false
                     }
                     this.addNode(me);
                     var parent = this.getNodeById(categoryId);
@@ -119,8 +120,11 @@ class MiilGraph extends LayoutForce {
         var type = node.type;
 
         if (type === 'category') {
+            // ノードの展開情報を展開済みに更新する
+            this.updateNodeValuesById(id, {open: true});
             // サブカテゴリを展開する
             this.parseMiilSubCategories(id);
+            console.info(node);
         }else if (type === 'subcategory') {
             // サブカテゴリに属するコンテンツを展開する
             var baseApi = 'http://api.miil.me/api/photos/recent/categories/' + node.id;

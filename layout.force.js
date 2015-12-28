@@ -136,6 +136,18 @@ var LayoutForce = (function () {
             return this.nodes;
         }
 
+        // ノードのkey-value更新する
+    }, {
+        key: 'updateNodeValuesById',
+        value: function updateNodeValuesById(id, kvPear) {
+            var nodeIdx = this.getNodeIdxById(id);
+            var keys = Object.keys(kvPear);
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                this.nodes[nodeIdx][key] = kvPear[key];
+            }
+        }
+
         // 与えられたIDを持つノードを削除する
         // 第二引数が true であれば，グラフを更新する
     }, {

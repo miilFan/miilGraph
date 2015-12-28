@@ -3,7 +3,6 @@ var main = function () {
     m = new MiilGraph('stage', json.nodes, json.edges);
     pu = m.parseMiilPhotosInUser;
     ps = m.parseMiilPhotosInSubCate;
-    console.info(ps);
     m.appLoad();
 }
 
