@@ -24,6 +24,7 @@ var MiilGraph = (function (_LayoutForce) {
         value: function getMiilApiUrl(baseURL, seriesURL, padding) {
             if (padding !== undefined) {
                 if (seriesURL !== undefined) {
+                    seriesURL = seriesURL.replace(/^http\:/, 'https:');
                     baseURL = seriesURL.replace('&limit=10', '').replace('.json', '');
                     padding = '&' + padding;
                 } else {

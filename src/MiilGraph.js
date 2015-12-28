@@ -3,6 +3,7 @@ class MiilGraph extends LayoutForce {
     getMiilApiUrl (baseURL, seriesURL, padding) {
         if (padding !== undefined) {
             if (seriesURL !== undefined) {
+                seriesURL = seriesURL.replace(/^http\:/, 'https:');
                 baseURL = seriesURL.replace('&limit=10', '').replace('.json', '');
                 padding = '&' + padding;
             }else {
