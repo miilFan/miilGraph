@@ -127,12 +127,12 @@ class MiilGraph extends LayoutForce {
             console.info(node);
         }else if (type === 'subcategory') {
             // サブカテゴリに属するコンテンツを展開する
-            var baseApi = 'http://api.miil.me/api/photos/recent/categories/' + node.id;
+            var baseApi = 'https://api.miil.me/api/photos/recent/categories/' + node.id;
             var api = this.getMiilApiUrl(baseApi, node.nextUrl, 'callback=ps');
             d3.jsonp(api, null);
         }else if (type === 'user') {
             var userName = node.title;
-            var baseApi = 'http://api.miil.me/api/users/'+ userName +'/photos/public';
+            var baseApi = 'https://api.miil.me/api/users/'+ userName +'/photos/public';
             var api = this.getMiilApiUrl(baseApi, node.nextUrl, 'callback=pu');
             d3.jsonp(api, null);
         }
