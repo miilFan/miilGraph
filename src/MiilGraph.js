@@ -188,16 +188,18 @@ class MiilGraph extends LayoutForce {
             }
         });
         // 写真をギャラリーに表示する
-        var gallery = document.querySelector('#gallery');
-        gallery.innerHTML = '';
-        photos.forEach(function (photo) {
-            var img = document.createElement('img');
-            img.className = 'gphoto';
-            img.src = photo.photo_url;
-            img.dataset.page_url = photo.page_url;
-            img.dataset.photo_id = photo.id;
-            gallery.appendChild(img);
-        });
+        if (photos.length > 0) {
+            var gallery = document.querySelector('#gallery');
+            gallery.innerHTML = '';
+            photos.forEach(function (photo) {
+                var img = document.createElement('img');
+                img.className = 'gphoto';
+                img.src = photo.photo_url;
+                img.dataset.page_url = photo.page_url;
+                img.dataset.photo_id = photo.id;
+                gallery.appendChild(img);
+            });
+        }
     }
 
     // @Override
