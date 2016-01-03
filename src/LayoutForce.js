@@ -40,13 +40,17 @@ class LayoutForce {
     }
 
     drawGraph () {
-        var self =this;
+        var self = this;
         var svg = d3.select('#' + this.stageId);
 
         // Linksを反映
-        var edge = svg.selectAll('.link').data(this.links).enter()
+        var e = svg.selectAll('.link').data(this.links);
+        var edge = e.enter()
             .append('line')
             .attr('class', 'link')
+            .attr('id', d => {
+                return 'link-to-' + (d.target.id);
+            })
             .style('stroke', d => {
                 return this.getEdgeColorByTargetNodeType(d.target.type);
             })
@@ -54,14 +58,18 @@ class LayoutForce {
                 if (d.value !== undefined) return d.value;
                 return 1;
             });
-        svg.selectAll('link').data(this.links).exit().remove();
+        e.exit().remove();
 
         // Nodesを反映
-        var node = svg.selectAll('.node').data(this.nodes).enter()
+        var n = svg.selectAll('.node').data(this.nodes);
+        var node = n.enter()
             .append('g')
+            .attr('id', d => {
+                return 'node-' + d.id;
+            })
             .attr('class', 'node')
             .call(this.force.drag);
-        svg.selectAll('.node').data(this.nodes).exit().remove();
+        n.exit().remove();
 
         // Node.Circlesを反映
         var circle = node.append('circle')
@@ -155,6 +163,17 @@ class LayoutForce {
     // 与えられたIDを持つリンクを削除する
     removeLinkById (id, redraw) {
 
+    }
+
+    // ノードとリンクのペアを削除する
+    removeNode (nodeId, redraw) {
+        this.nodes = this.nodes.filter(node => {
+            return (node.id == nodeId) ? null : node;
+        });
+        this.links = this.links.filter(link => {
+            return (link.target.id == nodeId) ? null : link;
+        });
+        this.drawGraph();
     }
 
     // canvasサイズを設定する

@@ -57,17 +57,23 @@ var LayoutForce = (function () {
             var svg = d3.select('#' + this.stageId);
 
             // Linksを反映
-            var edge = svg.selectAll('.link').data(this.links).enter().append('line').attr('class', 'link').style('stroke', function (d) {
+            var e = svg.selectAll('.link').data(this.links);
+            var edge = e.enter().append('line').attr('class', 'link').attr('id', function (d) {
+                return 'link-to-' + d.target.id;
+            }).style('stroke', function (d) {
                 return _this.getEdgeColorByTargetNodeType(d.target.type);
             }).style('stroke-width', function (d) {
                 if (d.value !== undefined) return d.value;
                 return 1;
             });
-            svg.selectAll('link').data(this.links).exit().remove();
+            e.exit().remove();
 
             // Nodesを反映
-            var node = svg.selectAll('.node').data(this.nodes).enter().append('g').attr('class', 'node').call(this.force.drag);
-            svg.selectAll('.node').data(this.nodes).exit().remove();
+            var n = svg.selectAll('.node').data(this.nodes);
+            var node = n.enter().append('g').attr('id', function (d) {
+                return 'node-' + d.id;
+            }).attr('class', 'node').call(this.force.drag);
+            n.exit().remove();
 
             // Node.Circlesを反映
             var circle = node.append('circle').attr('r', function (d) {
@@ -162,6 +168,19 @@ var LayoutForce = (function () {
     }, {
         key: 'removeLinkById',
         value: function removeLinkById(id, redraw) {}
+
+        // ノードとリンクのペアを削除する
+    }, {
+        key: 'removeNode',
+        value: function removeNode(nodeId, redraw) {
+            this.nodes = this.nodes.filter(function (node) {
+                return node.id == nodeId ? null : node;
+            });
+            this.links = this.links.filter(function (link) {
+                return link.target.id == nodeId ? null : link;
+            });
+            this.drawGraph();
+        }
 
         // canvasサイズを設定する
     }, {
