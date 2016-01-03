@@ -40,13 +40,31 @@ class LayoutForce {
     }
 
     drawGraph () {
-        var self =this;
+        var self = this;
         var svg = d3.select('#' + this.stageId);
+
+        // 論理削除されているノードを非表示にする
+        for (var i = 0; i < this.nodes.length; i++) {
+            var node = this.nodes[i];
+            var id = node.id;
+            if (document.getElementById('node-' + id) !== null) {
+                if (node.type === 'photo' && node.visible === false) {
+                    document.getElementById('node-' + id).style.visibility = 'hidden';
+                    document.getElementById('link-to-' + id).style.visibility = 'hidden';
+                }else if (node.type === 'photo' && node.visible === true) {
+                    document.getElementById('node-' + id).style.visibility = 'visible';
+                    document.getElementById('link-to-' + id).style.visibility = 'visible';
+                }
+            }
+        }
 
         // Linksを反映
         var edge = svg.selectAll('.link').data(this.links).enter()
             .append('line')
             .attr('class', 'link')
+            .attr('id', d => {
+                return 'link-to-' + (d.target.id);
+            })
             .style('stroke', d => {
                 return this.getEdgeColorByTargetNodeType(d.target.type);
             })
@@ -54,11 +72,14 @@ class LayoutForce {
                 if (d.value !== undefined) return d.value;
                 return 1;
             });
-        svg.selectAll('link').data(this.links).exit().remove();
+        svg.selectAll('.link').data(this.links).exit().remove();
 
         // Nodesを反映
         var node = svg.selectAll('.node').data(this.nodes).enter()
             .append('g')
+            .attr('id', d => {
+                return 'node-' + d.id;
+            })
             .attr('class', 'node')
             .call(this.force.drag);
         svg.selectAll('.node').data(this.nodes).exit().remove();

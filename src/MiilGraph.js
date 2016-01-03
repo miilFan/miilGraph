@@ -73,13 +73,15 @@ class MiilGraph extends LayoutForce {
         photos.forEach(photo_json => {
             var parentNodeId = photo_json[pid];
             var me = {
+                pid: parentNodeId,
                 id: photo_json.id,
                 title: photo_json.title,
                 type: 'photo',
                 photo_url: photo_json.url,
                 page_url: photo_json.page_url,
-                group: parentNodeId
-            }
+                group: parentNodeId,
+                visible: true
+            };
             self.addNode(me);
             var parent = self.getNodeById(parentNodeId);
             parent.nextUrl = nextUrl;
@@ -96,6 +98,18 @@ class MiilGraph extends LayoutForce {
     parseMiilPhotosInSubCate (callback_res) {
         // TODO: `m`を使わない場合どうすれば良いのかわからない
         m.parseMiilPhotos(callback_res, 'subcategory', m);
+    }
+
+    closeNodeExceptNodeId (id) {
+        var nodes = this.getNodesAll();
+        nodes.forEach(node => {
+            if (node.type === 'photo' && node.pid != id) {
+                console.info(node.pid);
+                this.updateNodeValuesById(node.id, {visible: false});
+            }else if (node.type === 'photo' && node.pid == id) {
+                this.updateNodeValuesById(node.id, {visible: true});
+            }
+        });
     }
 
     // @Override
@@ -127,11 +141,14 @@ class MiilGraph extends LayoutForce {
             this.parseMiilSubCategories(id);
             console.info(node);
         }else if (type === 'subcategory') {
+            // 自身以外のサブカテゴリに属するコンテンツを非表示にする
+            this.closeNodeExceptNodeId(id);
             // サブカテゴリに属するコンテンツを展開する
             var baseApi = 'https://api.miil.me/api/photos/recent/categories/' + node.id;
             var api = this.getMiilApiUrl(baseApi, node.nextUrl, 'callback=ps');
             d3.jsonp(api, null);
         }else if (type === 'user') {
+            this.closeNodeExceptNodeId(id);
             var userName = node.title;
             var baseApi = 'https://api.miil.me/api/users/'+ userName +'/photos/public';
             var api = this.getMiilApiUrl(baseApi, node.nextUrl, 'callback=pu');

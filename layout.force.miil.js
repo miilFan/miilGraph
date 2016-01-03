@@ -105,12 +105,14 @@ var MiilGraph = (function (_LayoutForce) {
             photos.forEach(function (photo_json) {
                 var parentNodeId = photo_json[pid];
                 var me = {
+                    pid: parentNodeId,
                     id: photo_json.id,
                     title: photo_json.title,
                     type: 'photo',
                     photo_url: photo_json.url,
                     page_url: photo_json.page_url,
-                    group: parentNodeId
+                    group: parentNodeId,
+                    visible: true
                 };
                 self.addNode(me);
                 var parent = self.getNodeById(parentNodeId);
@@ -131,6 +133,21 @@ var MiilGraph = (function (_LayoutForce) {
             // TODO: `m`を使わない場合どうすれば良いのかわからない
             m.parseMiilPhotos(callback_res, 'subcategory', m);
         }
+    }, {
+        key: 'closeNodeExceptNodeId',
+        value: function closeNodeExceptNodeId(id) {
+            var _this3 = this;
+
+            var nodes = this.getNodesAll();
+            nodes.forEach(function (node) {
+                if (node.type === 'photo' && node.pid != id) {
+                    console.info(node.pid);
+                    _this3.updateNodeValuesById(node.id, { visible: false });
+                } else if (node.type === 'photo' && node.pid == id) {
+                    _this3.updateNodeValuesById(node.id, { visible: true });
+                }
+            });
+        }
 
         // @Override
     }, {
@@ -145,11 +162,11 @@ var MiilGraph = (function (_LayoutForce) {
     }, {
         key: 'appLoad',
         value: function appLoad() {
-            var _this3 = this;
+            var _this4 = this;
 
             miil_categories.forEach(function (cate) {
                 if (cate.category_id !== 588 && cate.category_id !== 589) {
-                    _this3.parseMiilCategories(cate, [_this3.getNodeIdxById('miilroot')]);
+                    _this4.parseMiilCategories(cate, [_this4.getNodeIdxById('miilroot')]);
                 }
             });
             this.drawGraph();
@@ -169,11 +186,14 @@ var MiilGraph = (function (_LayoutForce) {
                 this.parseMiilSubCategories(id);
                 console.info(node);
             } else if (type === 'subcategory') {
+                // 自身以外のサブカテゴリに属するコンテンツを非表示にする
+                this.closeNodeExceptNodeId(id);
                 // サブカテゴリに属するコンテンツを展開する
                 var baseApi = 'https://api.miil.me/api/photos/recent/categories/' + node.id;
                 var api = this.getMiilApiUrl(baseApi, node.nextUrl, 'callback=ps');
                 d3.jsonp(api, null);
             } else if (type === 'user') {
+                this.closeNodeExceptNodeId(id);
                 var userName = node.title;
                 var baseApi = 'https://api.miil.me/api/users/' + userName + '/photos/public';
                 var api = this.getMiilApiUrl(baseApi, node.nextUrl, 'callback=pu');
