@@ -102,13 +102,15 @@ class MiilGraph extends LayoutForce {
 
     closeNodeExceptNodeId (id) {
         var nodes = this.getNodesAll();
+        var del_nodeIds = [];
         nodes.forEach(node => {
             if (node.type === 'photo' && node.pid != id) {
-                console.info(node.pid);
-                this.updateNodeValuesById(node.id, {visible: false});
-            }else if (node.type === 'photo' && node.pid == id) {
-                this.updateNodeValuesById(node.id, {visible: true});
+                del_nodeIds.push(node.id);
             }
+        });
+
+        del_nodeIds.forEach(nid => {
+            this.removeNode(nid, true);
         });
     }
 

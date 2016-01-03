@@ -43,23 +43,9 @@ class LayoutForce {
         var self = this;
         var svg = d3.select('#' + this.stageId);
 
-        // 論理削除されているノードを非表示にする
-        for (var i = 0; i < this.nodes.length; i++) {
-            var node = this.nodes[i];
-            var id = node.id;
-            if (document.getElementById('node-' + id) !== null) {
-                if (node.type === 'photo' && node.visible === false) {
-                    document.getElementById('node-' + id).style.visibility = 'hidden';
-                    document.getElementById('link-to-' + id).style.visibility = 'hidden';
-                }else if (node.type === 'photo' && node.visible === true) {
-                    document.getElementById('node-' + id).style.visibility = 'visible';
-                    document.getElementById('link-to-' + id).style.visibility = 'visible';
-                }
-            }
-        }
-
         // Linksを反映
-        var edge = svg.selectAll('.link').data(this.links).enter()
+        var e = svg.selectAll('.link').data(this.links);
+        var edge = e.enter()
             .append('line')
             .attr('class', 'link')
             .attr('id', d => {
@@ -72,17 +58,18 @@ class LayoutForce {
                 if (d.value !== undefined) return d.value;
                 return 1;
             });
-        svg.selectAll('.link').data(this.links).exit().remove();
+        e.exit().remove();
 
         // Nodesを反映
-        var node = svg.selectAll('.node').data(this.nodes).enter()
+        var n = svg.selectAll('.node').data(this.nodes);
+        var node = n.enter()
             .append('g')
             .attr('id', d => {
                 return 'node-' + d.id;
             })
             .attr('class', 'node')
             .call(this.force.drag);
-        svg.selectAll('.node').data(this.nodes).exit().remove();
+        n.exit().remove();
 
         // Node.Circlesを反映
         var circle = node.append('circle')
@@ -176,6 +163,17 @@ class LayoutForce {
     // 与えられたIDを持つリンクを削除する
     removeLinkById (id, redraw) {
 
+    }
+
+    // ノードとリンクのペアを削除する
+    removeNode (nodeId, redraw) {
+        this.nodes = this.nodes.filter(node => {
+            return (node.id == nodeId) ? null : node;
+        });
+        this.links = this.links.filter(link => {
+            return (link.target.id == nodeId) ? null : link;
+        });
+        this.drawGraph();
     }
 
     // canvasサイズを設定する

@@ -139,13 +139,15 @@ var MiilGraph = (function (_LayoutForce) {
             var _this3 = this;
 
             var nodes = this.getNodesAll();
+            var del_nodeIds = [];
             nodes.forEach(function (node) {
                 if (node.type === 'photo' && node.pid != id) {
-                    console.info(node.pid);
-                    _this3.updateNodeValuesById(node.id, { visible: false });
-                } else if (node.type === 'photo' && node.pid == id) {
-                    _this3.updateNodeValuesById(node.id, { visible: true });
+                    del_nodeIds.push(node.id);
                 }
+            });
+
+            del_nodeIds.forEach(function (nid) {
+                _this3.removeNode(nid, true);
             });
         }
 
