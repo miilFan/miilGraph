@@ -3,7 +3,7 @@
 
   "name": "MiilGraph",
   "description": "グラフでごちそう写真を探すmiilクライアント",
-  "version": "0.2016.0920.140",
+  "version": "1.0.1",
 
   "browser_action": {
     "default_icon": "yummy.png"
