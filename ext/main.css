@@ -1,0 +1,22 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+#mg {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border: 0px;
+}
+
+#mc {
+    position: fixed;
+    right: 30px;
+    bottom: 32px;
+    color: #EADFC6 !important;
+    background-color: #6D4C41 !important;
+}
