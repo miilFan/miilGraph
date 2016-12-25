@@ -4,6 +4,7 @@
   "name": "MiilGraph",
   "description": "グラフでごちそう写真を探すmiilクライアント",
   "version": "1.0.1",
+  "options_page": "index.html",
 
   "browser_action": {
     "default_icon": "yummy.png"
@@ -16,7 +17,10 @@
   },
 
   "background": {
-      "scripts": ["background.js"]
+      "scripts": [
+          "background.js",
+          "./miilclient/launch.js"
+      ]
   },
 
   "content_security_policy": "script-src 'self' https://api.miil.me https://code.getmdl.io; object-src 'self'",
